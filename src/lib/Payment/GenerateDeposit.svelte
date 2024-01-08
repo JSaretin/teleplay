@@ -22,6 +22,7 @@
 		xmr?: string;
 		trx?: string;
 	};
+	
 
 	const coins = {
 		btc: {
@@ -773,7 +774,7 @@
 </script>
 
 <div
-	class="fixed inset-0 bg-white bg-opacity-60 backdrop-blur-sm z-20 flex justify-center align-middle place-items-center"
+	class="fixed inset-0 bg-white bg-opacity-60 backdrop-blur-sm z-50 flex justify-center align-middle place-items-center"
 >
 	<Layout on:click>
 		<span slot="title">Select Coin</span>

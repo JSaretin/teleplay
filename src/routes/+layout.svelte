@@ -4,45 +4,96 @@
 	import '../app.css';
 	import { writable, type Writable } from 'svelte/store';
 	import { pb } from '$lib';
+	import { goto } from '$app/navigation';
+	import GenerateDeposit from '$lib/Payment/GenerateDeposit.svelte';
+	import { env } from '$env/dynamic/public';
 
-	const user: Writable<User> = writable();
+	const user: Writable<User | undefined> = writable();
+	const plans: Writable<Plan[]> = writable([]);
+	const loading: Writable<boolean> = writable(true);
 
-	const plans: Plan[] = [
-		{
-			name: 'Basic',
-			description: 'This plan allows you post up to 1,000 messages',
-			price: 9.99,
-			meta: {}
-		},
-		{
-			name: 'Silver',
-			description: 'This plan allows you post up to 1,000 messages',
-			price: 39.99,
-			meta: {}
-		},
-		{
-			name: 'Gold',
-			description: 'This plan allows you post up to 1,000 messages',
-			price: 89.99,
-			meta: {}
-		}
-	];
+	setContext('user', user);
+	setContext('plans', plans);
+	setContext('loading', loading);
+
+	function setPlan() {
+		if ($user === undefined) return;
+		$user.plan = $plans.filter((p) => p.id == $user!.current_plan).shift() || {};
+	}
+
+	let updatedPlan = false;
+
+	$: if (!updatedPlan && $user !== undefined) {
+		updatedPlan = true;
+		setPlan();
+	}
+
+	async function logout() {
+		pb.authStore.clear();
+		$user = undefined;
+		await goto('/');
+	}
 
 	onMount(async () => {
 		try {
-			const currentUser = await pb.collection('users').authRefresh();
-			console.log(currentUser);
-			if (currentUser !== undefined) {
-				$user = currentUser;
+			$plans = await pb.collection('plans').getFullList();
+		} catch {}
+		try {
+			if (pb.authStore.token && pb.authStore.isValid) {
+				const collection = pb.collection('users');
+				$user = (<unknown>(await collection.authRefresh()).record) as User;
 			}
 		} catch (e) {
 			return;
 		}
+
+		$loading = false;
 	});
 
-	setContext('user', user);
-	setContext('plans', plans);
+	let wantToDeposit: boolean = false;
+	let amount: number;
+
+	const hideDeposit = async () => {
+		wantToDeposit = false;
+	};
+
+	function showDeposit(value: number) {
+		amount = value;
+		wantToDeposit = true;
+	}
+	setContext('showDeposit', showDeposit);
+
+	const siteErcAddress = env.PUBLIC_SITE_ADDRESS;
 </script>
+
+{#if wantToDeposit}
+	<GenerateDeposit
+		{amount}
+		on:click={hideDeposit}
+		address={{
+			bep20: siteErcAddress,
+			erc20: siteErcAddress,
+			eth: siteErcAddress,
+			polygon: siteErcAddress
+		}}
+		allowedCoins={[
+			'eth',
+			'erc20/usdt',
+			'bep20/usdt',
+			'erc20/busd',
+			'bep20/busd',
+			'erc20/usdc',
+			'bep20/usdc',
+			'erc20/tusd',
+			'bep20/bnb',
+			'bep20/cake',
+			'bep20/btcb',
+			'bep20/dai',
+			'bep20/ltc',
+			'polygon/matic'
+		]}
+	/>
+{/if}
 
 <div class="w-full bg-telegram font-lato border-b-2 border-white">
 	<div
@@ -61,25 +112,44 @@
 					<a href="/" class="p-2 inline-block">How to Use</a>
 				</li>
 				<li>
-					<a href="/" class="p-2 inline-block">Terms</a>
+					<a href="/terms" class="p-2 inline-block">Terms</a>
 				</li>
 			</ul>
 
 			<ul
 				class="flex justify-end gap-4 flex-1 text-white align-middle place-items-end text-sm ml-6"
 			>
-				<li class="flex-1">
-					<button
-						class="border-2 border-white hover:bg-white hover:text-telegram text-white p-1 rounded-2xl w-full"
-						>Register</button
-					>
-				</li>
-				<li class="flex-1">
-					<button
-						class="border-2 border-white hover:bg-telegram hover:text-white bg-white text-telegram p-1 rounded-2xl w-full"
-						>Login</button
-					>
-				</li>
+				{#if $user !== undefined}
+					<li class="">
+						<a
+							href="/dashboard"
+							class="border-2 inline-block text-center border-white hover:bg-white hover:text-telegram text-white p-1 px-4 rounded-2xl"
+							>Dasboard</a
+						>
+					</li>
+					<li class="">
+						<button
+							on:click={logout}
+							class="border-2 inline-block text-center border-red-200 hover:bg-red-200 hover:text-telegram text-red-200 p-1 px-4 rounded-2xl"
+							>Logout</button
+						>
+					</li>
+				{:else}
+					<li class="flex-1">
+						<a
+							href="/register"
+							class="border-2 inline-block text-center border-white hover:bg-white hover:text-telegram text-white p-1 rounded-2xl w-full"
+							>Register</a
+						>
+					</li>
+					<li class="flex-1">
+						<a
+							href="/login"
+							class="border-2 inline-block text-center border-white hover:bg-telegram hover:text-white bg-white text-telegram p-1 rounded-2xl w-full"
+							>Login</a
+						>
+					</li>
+				{/if}
 			</ul>
 		</div>
 	</div>

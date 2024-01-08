@@ -1,4 +1,5 @@
 export interface Plan {
+    id: string;
     name: string;
     description: string;
     price: number;
@@ -8,4 +9,9 @@ export interface Plan {
 }
 
 
-export type User = any
+export type User = {
+    id: string;
+    current_plan: Plan['id'] | "";
+    plan: Plan | {};
+    [key: string]: any;
+}

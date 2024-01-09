@@ -7,6 +7,7 @@
 	import { goto } from '$app/navigation';
 	import GenerateDeposit from '$lib/Payment/GenerateDeposit.svelte';
 	import { env } from '$env/dynamic/public';
+	import { page } from '$app/stores';
 
 	const user: Writable<User | undefined> = writable();
 	const plans: Writable<Plan[]> = writable([]);
@@ -161,37 +162,26 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 			<div class="mb-4">
 				<h4 class="text-xl font-bold mb-4">About Us</h4>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec turpis ac risus.</p>
+				<p>
+					TelePlay is an advanced software designed to revolutionize your Telegram group management
+					experience.
+				</p>
 			</div>
 			<div class="mb-4">
 				<h4 class="text-xl font-bold mb-4">Quick Links</h4>
 				<ul>
-					<li><a href="#">Home</a></li>
-					<li><a href="#">Services</a></li>
-					<li><a href="#">Products</a></li>
-					<li><a href="#">Contact</a></li>
+					<li><a href="/">Home</a></li>
+					<li><a href="/terms">Terms</a></li>
 				</ul>
 			</div>
 			<div class="mb-4">
 				<h4 class="text-xl font-bold mb-4">Contact Us</h4>
-				<p>Email: info@example.com</p>
-				<p>Phone: +123 456 7890</p>
+				<p>Email: support@{$page.url.hostname}</p>
 			</div>
 			<div class="mb-4">
 				<h4 class="text-xl font-bold mb-4">Follow Us</h4>
 				<div class="flex space-x-4">
-					<a href="#" class="text-white hover:text-gray-400">
-						<i class="fab fa-facebook" />
-					</a>
-					<a href="#" class="text-white hover:text-gray-400">
-						<i class="fab fa-twitter" />
-					</a>
-					<a href="#" class="text-white hover:text-gray-400">
-						<i class="fab fa-instagram" />
-					</a>
-					<a href="#" class="text-white hover:text-gray-400">
-						<i class="fab fa-linkedin" />
-					</a>
+					<!-- socials -->
 				</div>
 			</div>
 		</div>

@@ -24,10 +24,9 @@
 		currentGroup = '';
 	}
 
-
 	async function createTask() {
 		if ($user.plan?.id === undefined) {
-			emitter('showplan')
+			emitter('showplan');
 			return;
 		}
 
@@ -57,14 +56,16 @@
 	$: showError = isLive === 'past' && new Date().getTime() <= new Date(fromDate).getTime();
 </script>
 
-
 <div
 	class="fixed inset-0 bg-gray-950 bg-opacity-90 backdrop-blur-sm z-20 flex justify-center align-middle place-items-center"
 >
 	<div
 		class="bg-white h-screen lg:h-fit lg:max-w-2xl w-full p-4 mx-auto lg:rounded-md relative flex justify-center align-middle place-items-center"
 	>
-		<button class="absolute top-3 lg:top-0 right-0 p-2 fill-red-500" on:click>
+		<button
+			class="hidden lg:inline-block absolute top-3 lg:top-0 right-0 p-2 fill-red-500"
+			on:click
+		>
 			<Close />
 		</button>
 

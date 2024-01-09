@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { pb } from '$lib';
 	import CreateTask from '$lib/CreateTask.svelte';
-	import RenderPlans from '$lib/Plans/RenderPlans.svelte';
 	import PopUpPlans from '$lib/PopUpPlans.svelte';
 	import type { User } from '$lib/structure';
 	import { getContext } from 'svelte';
@@ -22,33 +23,41 @@
 
 	let createTask: boolean;
 
-	function hideCreateTask() {
-		createTask = false;
-	}
-	function showCreateTask() {
-		createTask = true;
+	$: showPlans = $page.url.hash == '#plans';
+	$: createTask = $page.url.hash == '#newtask';
+
+	async function gotoHash(hash: string) {
+		if ($page.url.hash == `#${hash}`) return;
+		const url = new URL($page.url);
+		url.hash = hash;
+		await goto(url.href);
 	}
 
-	let showPlans = false;
+	async function displayShowPlan() {
+		await gotoHash('plans');
+	}
 
-	function displayShowPlan() {
-		showPlans = true;
+	async function hidePlanPopUp() {
+		await gotoHash('');
+	}
+
+	async function hideCreateTask() {
+		await gotoHash('');
+	}
+	async function showCreateTask() {
+		await gotoHash('newtask');
 	}
 </script>
 
 {#if showPlans}
-	<PopUpPlans
-		on:click={() => {
-			showPlans = false;
-		}}
-	/>
+	<PopUpPlans on:click={hidePlanPopUp} />
 {/if}
 
 {#if createTask}
 	<CreateTask
-		on:newtask={(event) => {
+		on:newtask={async (event) => {
 			tasks = [event.detail, ...tasks];
-			hideCreateTask();
+			await hideCreateTask();
 		}}
 		on:showplan={displayShowPlan}
 		on:click={hideCreateTask}

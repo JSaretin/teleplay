@@ -14,9 +14,12 @@
 			await goto(`/login?next=${$page.url.pathname}`);
 			return;
 		}
-		pb.collection('users').subscribe($user.id, async (data) => {
-			$user = { ...$user, ...data.record };
-		});
+
+		try {
+			await pb.collection('users').subscribe($user.id, async (data) => {
+				$user = { ...$user, ...data.record };
+			});
+		} catch (e) {}
 	};
 
 	let checkedAuth = false;

@@ -65,7 +65,31 @@
 	setContext('showDeposit', showDeposit);
 
 	const siteErcAddress = env.PUBLIC_SITE_ADDRESS;
+
+	let deferredInstallEvent: any;
+
+	onMount(() => {
+		window.addEventListener('beforeinstallprompt', (e) => {
+			e.preventDefault();
+			deferredInstallEvent = e;
+		});
+	});
+
+	async function handleInstall() {
+		deferredInstallEvent.prompt();
+		let choice = await deferredInstallEvent.userChoice;
+		if (choice.outcome === 'accepted') {
+			// User accepted to install the application
+		} else {
+			// User dismissed the prompt
+		}
+		deferredInstallEvent = undefined;
+	}
 </script>
+
+<svelte:head>
+	<title>TelePlay | Create Group Drama</title>
+</svelte:head>
 
 {#if wantToDeposit}
 	<GenerateDeposit
@@ -94,6 +118,17 @@
 			'polygon/matic'
 		]}
 	/>
+{/if}
+
+{#if deferredInstallEvent}
+	<div
+		class="sm:hidden bg-opacity-90 backdrop-blur-sm bg-telegram rounded-t-2xl z-50 fixed bottom-0 flex flex-col justify-center align-middle left-0 w-full p-4"
+	>
+		<p class="text-white text-lg italic text-center mb-2">
+			install app for easy access and management
+		</p>
+		<button class="rounded-md p-2 text-white bg-green-400" on:click={handleInstall}>Install</button>
+	</div>
 {/if}
 
 <div class="w-full bg-telegram font-lato border-b-2 border-white">

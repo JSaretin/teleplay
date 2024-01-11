@@ -19,11 +19,9 @@
 </script>
 
 {#each $plans as plan, _}
-	<div
-		class="rounded-md overflow-hidden shadow-md shadow-telegram bg-white backdrop-blur-lg backdrop-filter bg-opacity-20"
-	>
+	<div class="rounded-md overflow-hidden shadow-md shadow-gray-300 bg-white">
 		<h3
-			class="text-2xl text-center uppercase bg-telegram text-white p-3 backdrop-blur-md backdrop-filter bg-opacity-90"
+			class="text-2xl text-center uppercase bg-gray-600 text-white p-3 backdrop-blur-md backdrop-filter bg-opacity-90"
 		>
 			{plan.name}
 		</h3>
@@ -41,7 +39,7 @@
 				on:click={async () => {
 					await deposit(plan);
 				}}
-				class="w-full p-3 rounded-md bg-green-500 text-white text-lg">subscribe</button
+				class="w-full p-3 rounded-md bg-telegram text-white text-lg">subscribe</button
 			>
 		</div>
 	</div>

@@ -44,9 +44,9 @@
 	}
 </script>
 
-<div class="w-full h-screen flex justify-center align-middle place-items-center">
+<div class="w-full h-screen flex justify-center align-middle place-items-center p-4">
 	{#if created}
-		<div class="max-w-[300px] p-4 shadow-sm shadow-telegram">
+		<div class="lg:max-w-[300px] p-4 shadow-sm shadow-telegram w-full rounded-md text-gray-700">
 			<p>
 				Your account has been created, check your email for confirmation link to verify your account
 				and <a href="/login" class="text-telegram">login</a>
@@ -55,7 +55,7 @@
 	{:else}
 		<form
 			on:submit|preventDefault={register}
-			class="flex max-w-[300px] w-full bg-white rounded-2xl shadow-sm shadow-gray-400 flex-col gap-4 p-4 relative"
+			class="flex lg:max-w-[350px] w-full bg-white rounded-2xl shadow-sm shadow-gray-400 flex-col gap-4 p-4 relative"
 		>
 			{#if feedback !== undefined}
 				<div
@@ -65,15 +65,21 @@
 				</div>
 			{/if}
 			<label class="flex flex-col gap-2">
-				email
-				<input required bind:value={email} type="email" class="bg-gray-100 p-1 rounded-md" />
+				Email
+				<input
+					placeholder="awesomeuser@gmail.com"
+					required
+					bind:value={email}
+					type="email"
+					class="bg-gray-100 p-1 rounded-md"
+				/>
 			</label>
 			<label class="flex flex-col gap-2">
-				password
+				Password
 				<input required bind:value={password} type="password" class="bg-gray-100 p-1 rounded-md" />
 			</label>
 			<label class="flex flex-col gap-2">
-				confirm password
+				Confirm password
 				<input
 					required
 					bind:value={passwordConfirm}
@@ -85,7 +91,7 @@
 			<button
 				disabled={creating}
 				type="submit"
-				class="p-2 w-full rounded-md bg-yellow-400 hover:bg-yellow-500 text-white"
+				class="p-2 mt-6 w-full rounded-md bg-yellow-400 hover:bg-yellow-500 text-white"
 				>{creating ? 'Creating' : 'Register'}</button
 			>
 

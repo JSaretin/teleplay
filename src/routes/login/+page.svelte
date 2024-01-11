@@ -40,10 +40,10 @@
 	}
 </script>
 
-<div class="w-full h-screen flex justify-center align-middle place-items-center">
+<div class="w-full h-screen flex justify-center align-middle place-items-center p-4">
 	<form
 		on:submit|preventDefault={login}
-		class="flex max-w-[300px] w-full bg-white rounded-2xl shadow-sm shadow-gray-400 flex-col gap-4 p-4 relative"
+		class="flex lg:max-w-[350px] w-full bg-white rounded-2xl shadow-sm shadow-gray-400 flex-col gap-4 p-4 relative"
 	>
 		{#if feedback !== undefined}
 			<div
@@ -54,18 +54,24 @@
 		{/if}
 
 		<label class="flex flex-col gap-2">
-			email
-			<input required bind:value={email} type="email" class="bg-gray-100 p-1 rounded-md" />
+			Email
+			<input
+				required
+				bind:value={email}
+				placeholder="awesomeuser@gmail.com"
+				type="email"
+				class="bg-gray-100 p-1 rounded-md"
+			/>
 		</label>
 		<label class="flex flex-col gap-2">
-			password
+			Password
 			<input required bind:value={password} type="password" class="bg-gray-100 p-1 rounded-md" />
 		</label>
 
 		<button
 			disabled={loggingIn}
 			type="submit"
-			class="p-2 w-full rounded-md bg-blue-400 hover:bg-blue-500 text-white">Login</button
+			class="p-2 mt-6 w-full rounded-md bg-blue-400 hover:bg-blue-500 text-white">Login</button
 		>
 		<div class="mt-4 text-sm text-gray-500">
 			<p>Don't have an account? <a href="/register" class="text-blue-500">Register</a></p>

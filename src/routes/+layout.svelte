@@ -8,6 +8,7 @@
 	import GenerateDeposit from '$lib/Payment/GenerateDeposit.svelte';
 	import { env } from '$env/dynamic/public';
 	import { page } from '$app/stores';
+	import MobileBugger from '$lib/MobileBugger.svelte';
 
 	const user: Writable<User | undefined> = writable();
 	const plans: Writable<Plan[]> = writable([]);
@@ -85,6 +86,12 @@
 		}
 		deferredInstallEvent = undefined;
 	}
+
+	let menuIsOpen = false;
+
+	function toggleMenu() {
+		menuIsOpen = !menuIsOpen;
+	}
 </script>
 
 <svelte:head>
@@ -131,13 +138,19 @@
 	</div>
 {/if}
 
-<div class="w-full bg-telegram font-lato border-b-2 border-white">
+<div
+	class="sticky z-50 top-0 left-0 bg-opacity-90 backdrop-blur-sm w-full bg-telegram font-lato shadow-md shadow-white"
+>
 	<div
-		class="max-w-4xl w-full mx-auto flex py-4 px-6 justify-between align-middle place-items-center"
+		class="max-w-7xl w-full mx-auto flex py-4 px-6 justify-between align-middle place-items-center"
 	>
-		<a href="/" class="flex-1"> <h1 class="text-white uppercase font-bold">TelePlay</h1></a>
-		<div class="flex-[2] hidden lg:flex">
-			<ul class="flex justify-between flex-1 text-white text-sm h-fit">
+		<a href="/" class="flex-1">
+			<h1 class="text-white uppercase font-bold text-2xl">TelePlay</h1></a
+		>
+
+		<MobileBugger bind:isOpen={menuIsOpen} on:click={toggleMenu} />
+		<div class={'flex-[2] hidden lg:flex'}>
+			<ul class="flex justify-around flex-1 text-white font-semibold h-fit">
 				<li>
 					<a href="/" class="p-2 inline-block">Home</a>
 				</li>
@@ -152,41 +165,23 @@
 				</li>
 			</ul>
 
-			<ul
-				class="flex justify-end gap-4 flex-1 text-white align-middle place-items-end text-sm ml-6"
-			>
-				{#if $user !== undefined}
-					<li class="">
-						<a
-							href="/dashboard"
-							class="border-2 inline-block text-center border-white hover:bg-white hover:text-telegram text-white p-1 px-4 rounded-2xl"
-							>Dasboard</a
-						>
-					</li>
-					<li class="">
+			<div class="max-w-sm w-full flex justify-end">
+				<div
+					class="flex max-w-[300px] w-full gap-6 [&_*]:w-1/2 [&_*]:border-2 [&_*]:border-white [&_*]:rounded-2xl [&_*]:text-center [&_*:hover]:bg-white [&_*:hover]:text-telegram [&_*]:flex [&_*]:justify-center [&_*]:align-middle [&_*]:place-items-center [&_*]:text-white"
+				>
+					{#if $user !== undefined}
+						<a href="/dashboard">Dasboard</a>
 						<button
-							on:click={logout}
-							class="border-2 inline-block text-center border-red-200 hover:bg-red-200 hover:text-telegram text-red-200 p-1 px-4 rounded-2xl"
+							on:click|preventDefault={logout}
+							class="hover:bg-yellow-500"
 							>Logout</button
 						>
-					</li>
-				{:else}
-					<li class="flex-1">
-						<a
-							href="/register"
-							class="border-2 inline-block text-center border-white hover:bg-white hover:text-telegram text-white p-1 rounded-2xl w-full"
-							>Register</a
-						>
-					</li>
-					<li class="flex-1">
-						<a
-							href="/login"
-							class="border-2 inline-block text-center border-white hover:bg-telegram hover:text-white bg-white text-telegram p-1 rounded-2xl w-full"
-							>Login</a
-						>
-					</li>
-				{/if}
-			</ul>
+					{:else}
+						<a href="/register">Register</a>
+						<a href="/login">Login</a>
+					{/if}
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

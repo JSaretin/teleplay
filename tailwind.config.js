@@ -4,9 +4,18 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: { Lato: ['Lato', 'sans-serif'] },
-      colors: {
-        telegram: '#2AABEE'
-      }
+			colors: {
+				telegram: '#2AABEE'
+			},
+			animation: {
+				'infinite-scroll': 'infinite-scroll 25s linear infinite'
+			},
+			keyframes: {
+				'infinite-scroll': {
+					from: { transform: 'translateX(0)' },
+					to: { transform: 'translateX(-100%)' }
+				}
+			}
 		}
 	},
 	plugins: []

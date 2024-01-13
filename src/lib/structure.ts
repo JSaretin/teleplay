@@ -3,6 +3,7 @@ export interface Plan {
     name: string;
     description: string;
     price: number;
+    recomend: boolean;
     meta: {
         [key: string]: string | number | string[]
     }

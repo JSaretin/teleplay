@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, getContext } from 'svelte';
-	import PopUpPlans from './PopUpPlans.svelte';
+	import { goto } from '$app/navigation';
 	import Close from './Payment/Icons/Close.svelte';
 	import type { Writable } from 'svelte/store';
 	import type { User } from './structure';
@@ -26,7 +26,7 @@
 
 	async function createTask() {
 		if ($user.plan?.id === undefined) {
-			emitter('showplan');
+			await goto('/#plans');
 			return;
 		}
 
@@ -49,33 +49,22 @@
 			});
 			emitter('newtask', newTask);
 		} catch (e) {
-			console.log(e);
 		}
 	}
 
 	$: showError = isLive === 'past' && new Date().getTime() <= new Date(fromDate).getTime();
 </script>
 
-<div
-	class="fixed inset-0 bg-gray-950 bg-opacity-90 backdrop-blur-sm z-20 flex justify-center align-middle place-items-center"
->
-	<div
-		class="bg-white h-screen lg:h-fit lg:max-w-2xl w-full p-4 mx-auto lg:rounded-md relative flex justify-center align-middle place-items-center"
-	>
-		<button
-			class="hidden lg:inline-block absolute top-3 lg:top-0 right-0 p-2 fill-red-500"
-			on:click
-		>
-			<Close />
-		</button>
-
+<div class="max-w-4xl w-full h-full mx-auto bg-white p-4">
+	<h2 class="mb-10 text-3xl font-bold text-gray-900">Create Play</h2>
+	<div class="">
 		<div class="gap-4 flex flex-col w-full h-fit">
 			<div class="flex flex-col">
 				From Group
 				<input
 					type="text"
 					bind:value={fromGroup}
-					class="p-2 rounded-md bg-gray-200"
+					class="p-2 rounded-md bg-gray-100 shadow-sm shadow-gray-300"
 					placeholder="@awesomegroup"
 				/>
 			</div>
@@ -93,7 +82,7 @@
 					<input
 						type="datetime-local"
 						bind:value={fromDate}
-						class={'p-2 rounded-md bg-gray-200 w-full ' +
+						class={'p-2 rounded-md bg-gray-100 shadow-sm shadow-gray-300 w-full ' +
 							(showError ? 'border-2 border-red-500' : '')}
 					/>
 				</div>
@@ -104,7 +93,7 @@
 						type="text"
 						inputmode="decimal"
 						placeholder="600"
-						class="p-2 rounded-md bg-gray-200"
+						class="p-2 rounded-md bg-gray-100 shadow-sm shadow-gray-300"
 					/>
 				</div>
 			{:else}
@@ -115,7 +104,7 @@
 						type="text"
 						inputmode="decimal"
 						placeholder="20"
-						class="p-2 rounded-md bg-gray-200"
+						class="p-2 rounded-md bg-gray-100 shadow-sm shadow-gray-300"
 					/>
 				</div>
 			{/if}
@@ -128,7 +117,11 @@
 					{/each}
 				</ul>
 				<div class="flex rounded-md overflow-hidden">
-					<input type="text" class="flex-1 bg-gray-200 p-2" bind:value={currentGroup} />
+					<input
+						type="text"
+						class="flex-1 bg-gray-100 shadow-sm shadow-gray-300 p-2"
+						bind:value={currentGroup}
+					/>
 					<button on:click={addGroup} class="bg-blue-500 text-white px-6">add</button>
 				</div>
 			</div>
@@ -136,7 +129,7 @@
 			<button
 				disabled={showError}
 				on:click={createTask}
-				class="bg-green-500 p-2 rounded-md text-white">create task</button
+				class="bg-green-500 mt-8 p-2 rounded-md text-white">create task</button
 			>
 		</div>
 	</div>

@@ -10,11 +10,11 @@
 	const user: Writable<User> = getContext('user');
 
 	let feedback: string | undefined;
-
 	let email: string;
 	let password: string;
-
 	let loggingIn = false;
+
+	const nextPath = $page.url.toString().split('next=')[1] || '';
 
 	async function login() {
 		if (loggingIn) return;
@@ -24,9 +24,8 @@
 			const currentUser = await pb
 				.collection('users')
 				.authWithPassword(email.toLowerCase(), password);
-			console.log(currentUser);
 			$user = (<unknown>currentUser.record) as User;
-			await goto($page.url.searchParams.get('next') || '/dashboard');
+			await goto(Boolean(nextPath) ? nextPath : '/dashboard');
 		} catch (e: any) {
 			feedback = e.message;
 		}
@@ -36,7 +35,7 @@
 	let checkedAuth = false;
 	$: if (!checkedAuth && !$loading && $user !== undefined) {
 		checkedAuth = true;
-		goto('/dashboard');
+		goto(Boolean(nextPath) ? nextPath : '/dashboard');
 	}
 </script>
 

@@ -10,11 +10,13 @@
 	import Testimonials from '$lib/Testimonials.svelte';
 	import Hero from '$lib/Hero.svelte';
 	import Faqs from '$lib/Faqs.svelte';
+	import Right from '$lib/illustrate/Right.svelte';
 </script>
 
 <Hero />
 
 <div
+	id="about"
 	class="max-w-7xl text-lg text-gray-600 flex flex-col lg:flex-row gap-4 w-full mx-auto p-4 py-10"
 >
 	<div class="flex flex-col max-w-lg w-full px-6 py-8 rounded-md gap-4 shadow-sm shadow-gray-300">
@@ -82,8 +84,10 @@
 				group while replacing specific words in the message
 			</p>
 			<div class="w-full lg:justify-start justify-center flex mt-6">
-				<button class="p-2 px-6 text-base font-semibold bg-telegram text-white rounded-full"
-					>Get Started</button
+				<a
+					href="/register"
+					class="border-2 group max-w-[250px] flex align-middle place-items-center justify-between w-full text-center border-telegram hover:text-white text-telegram hover:bg-telegram mt-8 p-4 rounded-2xl text-xl"
+					>Get Started <Right /></a
 				>
 			</div>
 		</div>
@@ -134,7 +138,7 @@
 	</div>
 </div> -->
 
-<div class="max-w-7xl w-full mx-auto p-4 py-20">
+<div class="max-w-7xl w-full mx-auto p-4 py-20" id="plans">
 	<h2 class="text-3xl font-bold text-gray-900 text-center mb-10">The Service We Offer</h2>
 	<div class="w-full grid lg:grid-cols-3 gap-4 py-6">
 		<RenderPlans />

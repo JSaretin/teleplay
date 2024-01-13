@@ -46,7 +46,7 @@
 	};
 </script>
 
-<div class="max-w-7xl w-full mx-auto p-4 py-20">
+<div id="faqs" class="max-w-7xl w-full mx-auto p-4 py-20">
 	<h2 class="text-center mb-10 text-3xl font-bold text-gray-900">Fequently Asked Questions</h2>
 	<div class=" flex flex-col gap-4 max-w-2xl mx-auto">
 		{#each faqs as faq, _}

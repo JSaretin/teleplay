@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import { pb } from '$lib';
 	import CreateTask from '$lib/CreateTask.svelte';
-	import PopUpPlans from '$lib/PopUpPlans.svelte';
+	import RenderTask from '$lib/RenderTask.svelte';
 	import type { User } from '$lib/structure';
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
@@ -23,7 +23,6 @@
 
 	let createTask: boolean;
 
-	$: showPlans = $page.url.hash == '#plans';
 	$: createTask = $page.url.hash == '#newtask';
 
 	async function gotoHash(hash: string) {
@@ -31,14 +30,6 @@
 		const url = new URL($page.url);
 		url.hash = hash;
 		await goto(url.href);
-	}
-
-	async function displayShowPlan() {
-		await gotoHash('plans');
-	}
-
-	async function hidePlanPopUp() {
-		await gotoHash('');
 	}
 
 	async function hideCreateTask() {
@@ -49,89 +40,76 @@
 	}
 </script>
 
-{#if showPlans}
-	<PopUpPlans on:click={hidePlanPopUp} />
-{/if}
-
 {#if createTask}
 	<CreateTask
 		on:newtask={async (event) => {
 			tasks = [event.detail, ...tasks];
 			await hideCreateTask();
 		}}
-		on:showplan={displayShowPlan}
 		on:click={hideCreateTask}
 	/>
-{/if}
+{:else if $user !== undefined}
+	<div class="mx-auto flex-1 p-6">
+		<div class="flex flex-col gap-4">
+			<h2 class="font-bold text-3xl text-gray-900 mb-10">User Stats</h2>
+			<div class="flex w-full flex-wrap gap-4 lg:gap-6">
+				<div
+					class="rounded-2xl lg:max-w-[300px] lg:aspect-video bg-white p-6 flex flex-col justify-between align-middle place-items-center overflow-hidden shadow-sm shadow-gray-300 flex-1"
+				>
+					<div class="text-center">
+						<p class="text-gray-400">Current Plan</p>
+						<h2 class="text-3xl text-gray-900">{$user.plan?.name || 'None'}</h2>
+					</div>
+					<a
+						href="/#plans"
+						class=" w-full text-center mt-6 text-green-500 border border-green-500 hover:bg-green-500 hover:text-white p-2 rounded-md"
+						>Upgrade Plan</a
+					>
+				</div>
 
-{#if $user !== undefined}
-	<div class="flex flex-col gap-4">
-		<h2 class="uppercase bg-telegram p-2 rounded-md text-white font-medium">Stats</h2>
-		<div class="grid lg:grid-cols-2 gap-4 text-sm text-gray-500">
-			<div
-				class="rounded-2xl p-4 flex justify-between align-middle place-items-center overflow-hidden shadow-sm shadow-telegram"
-			>
-				<div class="">
-					<h2>Current Plan</h2>
-					<p class="text-3xl text-telegram">{$user.plan?.name || 'None'}</p>
-				</div>
-				<button
-					on:click={displayShowPlan}
-					class="text-green-500 border border-green-500 hover:bg-green-500 hover:text-white p-1 rounded-md"
-					>upgrade</button
+				<div
+					class="rounded-2xl lg:max-w-[300px] lg:aspect-video bg-white p-6 flex flex-col justify-between align-middle place-items-center overflow-hidden shadow-sm shadow-gray-300 flex-1"
 				>
-			</div>
-			<div
-				class="rounded-2xl p-4 flex justify-between align-middle place-items-center overflow-hidden shadow-sm shadow-telegram"
-			>
-				<div class="">
-					<h2>Active Instances</h2>
-					<p class="text-3xl text-telegram">{tasks.length}</p>
+					<div class="text-center">
+						<p class="text-gray-400">Custom Plays</p>
+						<h2 class="text-3xl text-gray-900">{tasks.length}</h2>
+					</div>
+					<button
+						on:click={showCreateTask}
+						class=" w-full mt-6 text-yellow-500 border border-yellow-500 hover:bg-yellow-500 hover:text-white p-2 rounded-md"
+						>Create Play</button
+					>
 				</div>
-				<button
-					class="text-yellow-500 border border-yellow-500 hover:bg-yellow-500 hover:text-white p-1 rounded-md"
-					on:click={showCreateTask}>start play</button
+
+				<div
+					class="rounded-2xl lg:max-w-[300px] lg:aspect-video bg-white p-6 flex flex-col justify-between align-middle place-items-center overflow-hidden shadow-sm shadow-gray-300 w-full"
 				>
+					<div class="text-center">
+						<p class="text-gray-400">Created Plays</p>
+						<h2 class="text-3xl text-gray-900">{tasks.length}</h2>
+					</div>
+					<button
+						on:click={showCreateTask}
+						class=" w-full mt-6 text-telegram border border-telegram hover:bg-telegram hover:text-white p-2 rounded-md"
+						>Create Play</button
+					>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="flex flex-col gap-4 mt-8">
-		<h2 class="uppercase bg-telegram p-2 rounded-md text-white font-medium">Running Services</h2>
-		{#if tasks.length == 0}
-			<div class="flex bg-gray-200 p-4 rounded-md">
-				<p class="italic text-center text-gray-500">no service running</p>
-			</div>
-		{:else}
-			<div class="w-full flex flex-col gap-3">
-				{#each tasks as task (task.id)}
-					<button
-						class="flex flex-col gap-1 border border-telegram justify-between bg-white p-2 rounded-md shadow-sm shadow-telegram"
-					>
-						<div class="flex w-full justify-between">
-							<div class="text-telegram">
-								#{task.id}
-							</div>
-
-							<div class="flex bg-orange-500 p-1 rounded-md text-sm text-white">
-								<span
-									>{task.status === 0 ? 'pending' : task.status === 1 ? 'running' : 'stopped'}</span
-								>
-							</div>
-						</div>
-
-						<div class="flex w-full justify-between">
-							<div class="text-telegram">
-								<!-- {task.id} -->
-							</div>
-
-							<div class="flex p-1 rounded-md text-sm text-gray-700">
-								<span>{task.created}</span>
-							</div>
-						</div>
-					</button>
-				{/each}
-			</div>
-		{/if}
+		<div class="flex flex-col gap-4 my-20">
+			<h2 class="font-bold text-3xl text-gray-900 mb-10">Running Instances</h2>
+			{#if tasks.length == 0}
+				<div class="flex bg-white shadow-sm shadow-gray-300 p-4 rounded-md">
+					<p class="italic text-center text-gray-500 w-full">no service running</p>
+				</div>
+			{:else}
+				<div class="w-full flex flex-col gap-3">
+					{#each tasks as task (task.id)}
+						<RenderTask {task} />
+					{/each}
+				</div>
+			{/if}
+		</div>
 	</div>
 {/if}

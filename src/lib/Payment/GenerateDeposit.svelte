@@ -3,6 +3,10 @@
 	import Layout from './Layout.svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
+	import Question from '$lib/illustrate/Question.svelte';
+	import Qrcode from '$lib/Qrcode.svelte';
+	import CopyData from '$lib/CopyData.svelte';
+	import Advantage from '$lib/Advantage.svelte';
 
 	const depositInfo: Writable<any> = writable();
 
@@ -22,7 +26,6 @@
 		xmr?: string;
 		trx?: string;
 	};
-	
 
 	const coins = {
 		btc: {
@@ -773,64 +776,83 @@
 	});
 </script>
 
-<div
-	class="fixed inset-0 bg-white bg-opacity-60 backdrop-blur-sm z-50 flex justify-center align-middle place-items-center"
->
-	<Layout on:click>
-		<span slot="title">Select Coin</span>
-		{#if generating}
-			<img src={Loading} class="w-[150px] mx-auto aspect-square" alt="" />
-		{:else if $depositInfo === undefined}
-			<ul class="w-full text-gray-600 flex flex-col gap-2 bg-inherit text-sm px-2">
-				{#each allowedCoins as coin, _}
-					<li class="w-full">
-						<button
-							class="flex group w-full justify-between align-middle place-items-center hover:bg-telegram p-2 bg-inherit transition-colors duration-150 cursor-pointer ease-in rounded-md hover:text-white"
-							on:click={async () => {
-								await generatePayment(coin);
-							}}
-						>
-							<span class="whitespace-nowrap"
-								>{coins[coin].coin}
-								<span class="font-bold"> ({coins[coin].symbol.toUpperCase()})</span></span
-							>
-							<div class="flex gap-4">
-								<span class="text-gray-400 group-hover:text-inherit"
-									>({coin.split('/')[0].toUpperCase()})</span
-								>
-								<img class="w-6 aspect-square" src={coins[coin].logo} alt="" />
-							</div>
-						</button>
-					</li>
-				{/each}
-			</ul>
-		{:else}
-			<div class="relative">
+{#if generating}
+	<img src={Loading} class="w-[150px] mx-auto aspect-square object-cover" alt="" />
+{:else if $depositInfo === undefined}
+	<ul class="w-full text-gray-600 flex flex-col gap-2 bg-inherit text-sm px-2">
+		{#each allowedCoins as coin, _}
+			<li class="w-full">
 				<button
-					class="bg-yellow-400 opacity-10 hover:opacity-100 text-wrap text-sm w-full p-1 rounded-md"
-					on:click={() => {
-						$depositInfo = undefined;
-					}}>back</button
+					class="flex group w-full justify-between align-middle place-items-center hover:bg-telegram p-2 bg-inherit transition-colors duration-150 cursor-pointer ease-in rounded-md hover:text-white"
+					on:click={async () => {
+						await generatePayment(coin);
+					}}
 				>
+					<span class="whitespace-nowrap"
+						>{coins[coin].coin}
+						<span class="font-bold"> ({coins[coin].symbol.toUpperCase()})</span></span
+					>
+					<div class="flex gap-4">
+						<span class="text-gray-400 group-hover:text-inherit"
+							>({coin.split('/')[0].toUpperCase()})</span
+						>
+						<img class="w-6 aspect-square" src={coins[coin].logo} alt="" />
+					</div>
+				</button>
+			</li>
+		{/each}
+	</ul>
+{:else}
+	<div class="relative flex flex-col gap-4">
+		<p class="text-gray-600">
+			Use the "Pay in wallet" button, scan the QR code, or copy and paste the payment details into
+			your wallet
+		</p>
+		<button class="w-full p-2 rounded-md bg-telegram text-white">Pay in wallet</button>
+		<div class="flex flex-col justify-center align-middle place-items-center w-full gap-2">
+			<div
+				class="w-[150px] aspect-square mx-auto shadow-sm shadow-gray-300 rounded-md overflow-hidden"
+			>
 				<img
-					class="w-[150px] mt-4 aspect-square mx-auto bg-gray-100 rounded-md"
+					class="object-cover w-full aspect-square"
 					src={`https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=${$depositInfo.address_in}`}
 					alt=""
 				/>
-				<div class="flex flex-col gap-2">
-					<button
-						class="flex justify-center text-center w-full text-2xl text-telegram gap-2 font-bold"
-					>
-						<span class="">{$depositInfo.price}</span>
-						{$depositInfo.symbol.toUpperCase()}
-					</button>
-					<p
-						class="p-1 rounded-md bg-gray-400 text-white font-mono text-sm w-full overflow-hidden truncate"
-					>
-						{$depositInfo.address_in}
-					</p>
+			</div>
+			<p class="flex align-middle place-items-center text-blue-500 font-semibold gap-2">
+				How to pay with crypto <span
+					class="inline-block w-6 aspect-square fill-none stroke-blue-500"><Question /></span
+				>
+			</p>
+		</div>
+		<div class="border-t flex flex-col gap-4 py-4 text-sm [&_p]:text-gray-600">
+			<div class="flex flex-col font-bold gap-2">
+				Amount
+				<div
+					class="flex bg-gray-100 rounded-md py-1 px-4 overflow-hidden align-middle place-items-center"
+				>
+					<p class="flex-1">{$depositInfo.price} {$depositInfo.symbol.toUpperCase()}</p>
+					<div class="flex gap-2 text-gray-600">
+						<CopyData text="" />
+						<button class="flex flex-col"><Qrcode /><span>QR</span></button>
+					</div>
 				</div>
 			</div>
-		{/if}
-	</Layout>
-</div>
+
+			<div class="flex flex-col font-bold gap-2">
+				Address
+				<div
+					class="flex bg-gray-100 rounded-md py-1 px-4 overflow-hidden align-middle place-items-center"
+				>
+					<p class="flex-1">
+						{$depositInfo.address_in.slice(0, 10)}...{$depositInfo.address_in.slice(-10)}
+					</p>
+					<div class="flex gap-2 text-gray-600">
+						<CopyData text="" />
+						<button class="flex flex-col"><Qrcode /><span>QR</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}

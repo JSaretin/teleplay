@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class="w-full min-h-[600px] flex justify-center align-middle place-items-center font-Lato bg-gradient-to-br to-gray-900 from-telegram"
+	class="w-full min-h-[600px] flex justify-center align-middle place-items-center font-Lato bg-gradient-to-br to-gray-900 from-telegram py-10"
 >
 	<div
 		class="max-w-7xl flex-col lg:flex-row flex w-full mx-auto p-4 gap-6 justify-between place-items-center align-middle"
@@ -21,7 +21,7 @@
 				engagement.
 			</p>
 			<a
-				href="/dashboard"
+				href="/register"
 				class="border-2 group max-w-[250px] flex align-middle place-items-center justify-between w-full text-center border-white hover:border-telegram text-white hover:bg-telegram mt-8 p-4 rounded-2xl text-xl"
 				>Trend Your Brand <Right /></a
 			>

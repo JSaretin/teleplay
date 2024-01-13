@@ -1,4 +1,5 @@
 <script lang="ts">
+	import RequestEmailLink from '$lib/RequestEmailLink.svelte';
 	import { goto } from '$app/navigation';
 	import { pb } from '$lib';
 	import type { User } from '$lib/structure';
@@ -46,10 +47,11 @@
 
 <div class="w-full h-screen flex justify-center align-middle place-items-center p-4">
 	{#if created}
-		<div class="lg:max-w-[300px] p-4 shadow-sm shadow-telegram w-full rounded-md text-gray-700">
+		<div class="lg:max-w-[350px] p-4 shadow-sm shadow-telegram w-full rounded-md text-gray-700">
 			<p>
-				Your account has been created, check your email for confirmation link to verify your account
-				and <a href="/login" class="text-telegram">login</a>
+				Your account has been created, check your email for confirmation link to verify your
+				account. Then visit the <a href="/login" class="text-telegram">login</a> page so sign in or
+				click <RequestEmailLink {email} /> to get a new email
 			</p>
 		</div>
 	{:else}

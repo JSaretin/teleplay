@@ -29,12 +29,14 @@
 	}
 </script>
 
-<div class="max-w-4xl w-full mx-auto bg-white relative min-h-[100vh] overflow-hidden p-4">
+<div class="max-w-7xl w-full mx-auto relative h-screen">
 	{#if $loading}
 		<div class="w-full h-[100vh] flex justify-center align-middle place-items-center">
 			loading...
 		</div>
 	{:else}
-		<slot />
+		<div class="w-full h-full overflow-y-scroll relative flex max-w-4xl m-auto">
+			<slot />
+		</div>
 	{/if}
 </div>
